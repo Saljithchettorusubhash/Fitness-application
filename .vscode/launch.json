@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Backend",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/Fitness-Backend/App.js",  // Adjust this to your backend entry point
+            "outFiles": ["${workspaceFolder}/**/*.js"],
+            "env": {
+                "NODE_ENV": "development",
+                "PORT": "8800",  // Use the port you want your backend to run on
+                "JWT_SECRET_KEY": "your_secret_key_here"  // Add other environment variables here
+            }
+        }
+    ]
+}

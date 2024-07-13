@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                       Int                        @id @default(autoincrement())
+  email                    String                     @unique
+  name                     String
+  password                 String
+  dob                      DateTime
+  role                     UserRole
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
+  profile                  UserProfile?
+  userQuestionnaireResponses UserQuestionnaireResponse[]
+  photos                   Photo[]
+  matches                  Match[]
+  subscriptions            Subscription[]
+}
+
+model Trainer {
+  id                          Int                           @id @default(autoincrement())
+  email                       String                        @unique
+  name                        String
+  password                    String
+  dob                         DateTime
+  role                        UserRole
+  createdAt                   DateTime                      @default(now())
+  updatedAt                   DateTime                      @updatedAt
+  profile                     TrainerProfile?
+  trainerQuestionnaireResponses TrainerQuestionnaireResponse[]
+  photos                      Photo[]
+  matches                     Match[]
+  discoveryFeatures           DiscoveryFeature[]
+  subscriptions               Subscription[]
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  password  String
+  role      UserRole
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserProfile {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  username  String
+  country   String
+  city      String
+  interests Json
+  bio       String
+  user      User    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TrainerProfile {
+  id                  Int      @id @default(autoincrement())
+  trainerId           Int      @unique
+  username            String
+  country             String
+  city                String
+  trainingTypes       Json
+  sports              Json
+  danceTypes          Json
+  communicationStyle  String
+  teachingStyle       String
+  dietaryPlan         String
+  zodiacSign          String
+  bestDescriptiveWord String
+  trainer             Trainer  @relation(fields: [trainerId], references: [id])
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model Photo {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  trainerId Int?
+  url       String
+  user      User?    @relation(fields: [userId], references: [id])
+  trainer   Trainer? @relation(fields: [trainerId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserQuestionnaireResponse {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  question  String
+  answer    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TrainerQuestionnaireResponse {
+  id        Int      @id @default(autoincrement())
+  trainerId Int
+  question  String
+  answer    String
+  trainer   Trainer  @relation(fields: [trainerId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Match {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  trainerId Int
+  user      User     @relation(fields: [userId], references: [id])
+  trainer   Trainer  @relation(fields: [trainerId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DiscoveryFeature {
+  id          Int      @id @default(autoincrement())
+  trainerId   Int
+  featureType String
+  trainer     Trainer  @relation(fields: [trainerId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+}
+
+model Subscription {
+  id               Int      @id @default(autoincrement())
+  userId           Int?
+  trainerId        Int?
+  subscriptionType String
+  user             User?    @relation(fields: [userId], references: [id])
+  trainer          Trainer? @relation(fields: [trainerId], references: [id])
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+enum UserRole {
+  User
+  Trainer
+  Admin
+}
